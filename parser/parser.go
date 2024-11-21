@@ -163,6 +163,8 @@ func (p *Parser) parseArray() ([]any, error) {
 			if p.peek().Type == lexer.TokenCloseBracket {
 				return nil, fmt.Errorf("trailing comma")
 			}
+		} else if t.Type != lexer.TokenCloseBracket {
+			return nil, fmt.Errorf("expected closing bracket")
 		}
 	}
 }
