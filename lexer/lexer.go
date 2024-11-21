@@ -6,28 +6,26 @@ import (
 )
 
 type Lexer struct {
-	input     string
-	inputSize int
-	pos       int
+	input string
+	pos   int
 }
 
 func New(input string) Lexer {
 	return Lexer{
-		input:     input,
-		inputSize: len(input),
-		pos:       0,
+		input: input,
+		pos:   0,
 	}
 }
 
 func (l *Lexer) peek() byte {
-	if l.pos >= l.inputSize {
+	if l.pos >= len(l.input) {
 		return 0
 	}
 	return l.input[l.pos]
 }
 
 func (l *Lexer) next() byte {
-	if l.pos >= l.inputSize {
+	if l.pos >= len(l.input) {
 		return 0
 	}
 	char := l.input[l.pos]
@@ -37,7 +35,7 @@ func (l *Lexer) next() byte {
 
 func (l *Lexer) skipWhitespace() {
 	for {
-		if l.pos >= l.inputSize || !unicode.IsSpace(rune(l.peek())) {
+		if l.pos >= len(l.input) || !unicode.IsSpace(rune(l.peek())) {
 			break
 		}
 		l.next()
@@ -48,7 +46,7 @@ func (l *Lexer) parseString() (string, error) {
 	l.next()
 	start := l.pos
 	for {
-		if l.pos >= l.inputSize {
+		if l.pos >= len(l.input) {
 			return "", fmt.Errorf("invalid string: unterminated string")
 		}
 		char := l.next()
@@ -112,13 +110,12 @@ func (l *Lexer) parseNumber() (string, error) {
 }
 
 func (l *Lexer) matchLiteral(literal string) bool {
-	literalLen := len(literal)
-	if l.inputSize-l.pos < literalLen {
+	if len(l.input)-l.pos < len(literal) {
 		return false
 	}
 
-	if l.input[l.pos:l.pos+literalLen] == literal {
-		l.pos += literalLen
+	if l.input[l.pos:l.pos+len(literal)] == literal {
+		l.pos += len(literal)
 		return true
 	}
 
