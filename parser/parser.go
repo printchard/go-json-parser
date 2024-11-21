@@ -68,39 +68,37 @@ func (p *Parser) parseObject() (map[string]any, error) {
 		}
 		p.next()
 
+		var val any
+		var err error
 		t = p.peek()
 		switch t.Type {
 		case lexer.TokenOpenBrace:
-			val, err := p.parseObject()
-			if err != nil {
-				return nil, err
-			}
-			obj[key.Value] = val
+			val, err = p.parseObject()
 		case lexer.TokenOpenBracket:
-			val, err := p.parseArray()
-			if err != nil {
-				return nil, err
-			}
-			obj[key.Value] = val
+			val, err = p.parseArray()
 		case lexer.TokenString:
-			obj[key.Value] = t.Value
+			val = t.Value
 			p.next()
 		case lexer.TokenNumber:
-			val, _ := strconv.ParseFloat(t.Value, 64)
-			obj[key.Value] = val
+			val, err = strconv.ParseFloat(t.Value, 64)
 			p.next()
 		case lexer.TokenTrue:
-			obj[key.Value] = true
+			val = true
 			p.next()
 		case lexer.TokenFalse:
-			obj[key.Value] = false
+			val = false
 			p.next()
 		case lexer.TokenNull:
-			obj[key.Value] = nil
+			val = nil
 			p.next()
 		default:
-			return nil, fmt.Errorf("invalid value after key")
+			err = fmt.Errorf("invalid value after key")
 		}
+
+		if err != nil {
+			return nil, err
+		}
+		obj[key.Value] = val
 
 		t = p.peek()
 		if t.Type == lexer.TokenComma {
@@ -157,7 +155,6 @@ func (p *Parser) parseArray() ([]any, error) {
 		if err != nil {
 			return nil, err
 		}
-
 		arr = append(arr, val)
 
 		t = p.peek()
@@ -173,10 +170,10 @@ func (p *Parser) parseArray() ([]any, error) {
 func (p *Parser) Parse() (any, error) {
 	l := lexer.New(p.input)
 	tokens, err := l.Tokenize()
-	p.tokens = tokens
 	if err != nil {
 		return nil, fmt.Errorf("invalid input: %s", err)
 	}
+	p.tokens = tokens
 
 	t := p.peek()
 	if t.Type == lexer.TokenOpenBrace {
