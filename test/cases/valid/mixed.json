@@ -1,0 +1,4 @@
+{
+  "numbers": [1, 2.5, -3],
+  "flags": [true, false, null]
+}

@@ -1,0 +1,9 @@
+{
+  "user": {
+    "name": "Bob",
+    "address": {
+      "city": "Wonderland",
+      "zip": "12345"
+    }
+  }
+}
