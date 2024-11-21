@@ -24,12 +24,13 @@ func TestValid(t *testing.T) {
 
 		file, err := os.ReadFile(validCasesPath + entry.Name())
 		if err != nil {
-			t.Fatalf("Error reading file %s: %s", entry.Name(), err)
+			t.Errorf("Error reading file %s: %s", entry.Name(), err)
 		}
+
 		p := parser.New(string(file))
 		val, err := p.Parse()
 		if err != nil {
-			t.Fatalf("Expected valid output, got: %s", err)
+			t.Errorf("Expected valid output, got: %s", err)
 		}
 
 		t.Log(val)
@@ -49,12 +50,13 @@ func TestInvalid(t *testing.T) {
 
 		file, err := os.ReadFile(invalidCasesPath + entry.Name())
 		if err != nil {
-			t.Fatalf("Error reading file %s: %s", entry.Name(), err)
+			t.Errorf("Error reading file %s: %s", entry.Name(), err)
 		}
+
 		p := parser.New(string(file))
 		val, err := p.Parse()
 		if err == nil {
-			t.Fatalf("Expected invalid output, got: %v", val)
+			t.Errorf("Expected invalid output, got: %v", val)
 		}
 
 		t.Log(err)
