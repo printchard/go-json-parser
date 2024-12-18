@@ -2,6 +2,7 @@ package lexer
 
 import (
 	"fmt"
+	"strings"
 	"unicode"
 )
 
@@ -44,7 +45,7 @@ func (l *Lexer) skipWhitespace() {
 
 func (l *Lexer) parseString() (string, error) {
 	l.next()
-	start := l.pos
+	var str strings.Builder
 	for {
 		if l.pos >= len(l.input) {
 			return "", fmt.Errorf("invalid string: unterminated string")
@@ -56,11 +57,12 @@ func (l *Lexer) parseString() (string, error) {
 		}
 
 		if char == '\\' {
-			l.next()
+			char = l.next()
 		}
+		str.WriteByte(char)
 	}
 
-	return l.input[start : l.pos-1], nil
+	return str.String(), nil
 }
 
 func (l *Lexer) parseNumber() (string, error) {
