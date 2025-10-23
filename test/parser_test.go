@@ -140,6 +140,34 @@ func TestJson(t *testing.T) {
 	}
 }
 
+type address struct {
+	City string `json:"city"`
+	Zip  string `json:"zip"`
+}
+
+type user struct {
+	Name    string  `json:"name"`
+	Address address `json:"address"`
+}
+
+type testStruct struct {
+	User    user    `json:"user"`
+	Address address `json:"address"`
+}
+
+func TestJsonInto(t *testing.T) {
+	jsonData, err := os.ReadFile(validCasesPath + "nested_objects.json")
+	if err != nil {
+		t.Fatalf("Failed to open JSON file: %v", err)
+	}
+
+	var result testStruct
+	p := parser.New(string(jsonData))
+	if err := p.ParseInto(&result); err != nil {
+		t.Fatalf("Failed to parse JSON: %v", err)
+	}
+}
+
 func compareObj(a, b map[string]any) bool {
 	for k, v := range a {
 		switch castV := v.(type) {
